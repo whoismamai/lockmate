@@ -72,4 +72,13 @@ public class DoorController {
 
         return null;
     }
+
+    // buzz the door : support the user to identify a door lock by buzzing it
+    @PutMapping("/{id}/buzz")
+    public ResponseEntity<Void> buzzDoor() {
+
+        AppUtil.LOG.info("Buzzing door");
+
+        return null;
+    }
 }

@@ -6,8 +6,10 @@ import java.util.UUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder.Default;
 
@@ -16,6 +18,8 @@ import lombok.Builder.Default;
 @Builder
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentMethod {
 
     // this entity will our payment methods like MPESA, Credit Card, PayPal, etc.

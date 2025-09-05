@@ -13,8 +13,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder.Default;
 
@@ -24,6 +26,8 @@ import lombok.Builder.Default;
 @Getter
 @Setter
 @Immutable
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
 
     // (Optional) run the following on SQL shell to restrict access to the user ; e.g., lm_user

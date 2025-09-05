@@ -1,53 +1,54 @@
 package com.telenet.lockmate.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.telenet.lockmate.model.dto.lock.LockDTO;
+import com.telenet.lockmate.model.enums.Status;
+import com.telenet.lockmate.service.LockService;
 import com.telenet.lockmate.util.AppUtil;
 
 @RestController
 @RequestMapping("/api/locks")
 public class LockController {
-    
-    // for creating and pairing a door lock to a unit
 
-    // get all locks ; both the ones paired to doors and the unpaired ones
+    private final LockService lockService;
+
+    public LockController(LockService lockService) {
+        this.lockService = lockService;
+    }
+
     @GetMapping
-    public ResponseEntity<Void> getAllLocks() {
-
+    public ResponseEntity<List<LockDTO>> getAllLocks() {
         AppUtil.LOG.info("Fetching all door locks");
-
-        return null;        
+        return ResponseEntity.ok(lockService.getAllLocks());
     }
 
-    // by authorized user or admin
     @PutMapping("/{id}/lock")
-    public ResponseEntity<Void> lockDoor() {
-
-        AppUtil.LOG.info("Locking door");
-
-        return null;
+    public ResponseEntity<LockDTO> lockDoor(@PathVariable String id) {
+        AppUtil.LOG.info("Locking door {}", id);
+        LockDTO updated = lockService.updateLockStatus(id, Status.LOCKED);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
-    // by authorized user or admin
     @PutMapping("/{id}/unlock")
-    public ResponseEntity<Void> unlockDoor() {
-
-        AppUtil.LOG.info("Unlocking door");
-
-        return null;
+    public ResponseEntity<LockDTO> unlockDoor(@PathVariable String id) {
+        AppUtil.LOG.info("Unlocking door {}", id);
+        LockDTO updated = lockService.updateLockStatus(id, Status.UNLOCKED);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
-    // view door history : access logs, lock/unlock events
-    // by authorized user or admin
     @GetMapping("/{id}/history")
-    public ResponseEntity<Void> getDoorHistory() {
+    public ResponseEntity<String> getDoorHistory(@PathVariable String id) {
+        AppUtil.LOG.info("Fetching door history for {}", id);
+        return ResponseEntity.ok("History for lock " + id);
+    }
 
-        AppUtil.LOG.info("Fetching door history");
-
-        return null;
+    @PutMapping("/{id}/buzz")
+    public ResponseEntity<String> buzzDoor(@PathVariable String id) {
+        AppUtil.LOG.info("Buzzing door {}", id);
+        return ResponseEntity.ok("Buzzed door " + id);
     }
 }

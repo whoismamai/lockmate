@@ -1,7 +1,6 @@
 package com.telenet.lockmate.model.entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,26 +14,24 @@ import lombok.Setter;
 import lombok.Builder.Default;
 
 @Entity
-@Table(name = "facilities")
+@Table(name = "logs")
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Facility {
+@Builder
+public class Log {
     @Id
-    @Default private String id = UUID.randomUUID().toString();
+    @Default private String id = java.util.UUID.randomUUID().toString();
 
-    private String name;
-    private String physicalAddress;
-    private String contactNumber;
-    private String emailAddress;
-
-    private String ownerId; // Foreign key to User entity
-    private String accountId; // Foreign key to Account entity
+    private String message;
+    private String level; // e.g., INFO, WARN, ERROR
+    private String timestamp; // ISO 8601 format
+    private String userId; // Foreign key to User entity (if applicable)
+    private String lockId; // Foreign key to Lock entity (if applicable)
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String details; // Additional details or context (JSON string)
 
     private LocalDateTime dateCreated;
     private LocalDateTime lastModified;
