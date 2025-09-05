@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lockmate Control</title>
+
+    <!-- SockJS & STOMP -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <!-- CSS -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.lock {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        button.unlock {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        #controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        #connectionStatus {
+            margin-top: 10px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+
+        #notifications {
+            margin-top: 30px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        #notificationList {
+            list-style-type: none;
+            padding-left: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 300px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #notificationList li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Lockmate Control</h2>
+
+<label>Client ID: </label>
+<input type="text" id="deviceId" placeholder="Enter MLID"/>
+<button onclick="connect()">Connect</button>
+
+<p id="connectionStatus">Not connected</p>
+
+<div id="controls" style="display:none;">
+    <button class="lock" onclick="lockDevice()">Lock</button>
+    <button class="unlock" onclick="unlockDevice()">Unlock</button>
+    <p id="status"></p>
+</div>
+
+<div id="notifications">Notifications:</div>
+<ul id="notificationList"></ul>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function(frame) {
+            document.getElementById("connectionStatus").innerText = "Connected";
+            document.getElementById("controls").style.display = "block";
+
+            // Subscribe to status updates (lock/unlock + Kafka events)
+            stompClient.subscribe('/topic/status', function(message) {
+                const body = JSON.parse(message.body);
+
+                // Update status area
+                document.getElementById("status").innerText =
+                    "Device " + body.deviceId + " is " + body.status;
+
+                // Append notifications
+                const li = document.createElement("li");
+                li.innerText = `Device ${body.deviceId} event: ${body.status}`;
+                document.getElementById("notificationList").appendChild(li);
+
+                // Auto scroll
+                const list = document.getElementById("notificationList");
+                list.scrollTop = list.scrollHeight;
+            });
+        });
+    }
+
+    function lockDevice() {
+        const deviceId = document.getElementById("deviceId").value;
+        if (deviceId) {
+            stompClient.send("/app/lock", {}, JSON.stringify({ deviceId: deviceId }));
+        } else {
+            alert("Please enter a Client ID (MLID).");
+        }
+    }
+
+    function unlockDevice() {
+        const deviceId = document.getElementById("deviceId").value;
+        if (deviceId) {
+            stompClient.send("/app/unlock", {}, JSON.stringify({ deviceId: deviceId }));
+        } else {
+            alert("Please enter a Client ID (MLID).");
+        }
+    }
+</script>
+
+</body>
+</html>
