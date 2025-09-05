@@ -7,6 +7,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import com.telenet.lockmate.model.enums.Status;
+
 @Controller
 public class LockCommandWSController {
 
@@ -21,7 +23,7 @@ public class LockCommandWSController {
     public StatusMessage lockDevice(Message message) {
         String commandMessage = message.getDeviceId() + ":L";
         kafkaTemplate.send(topicName, commandMessage);
-        return new StatusMessage(message.getDeviceId(), "LOCKED");
+        return new StatusMessage(message.getDeviceId(), Status.LOCKED);
     }
 
     @MessageMapping("/unlock")
@@ -29,7 +31,7 @@ public class LockCommandWSController {
     public StatusMessage unlockDevice(Message message) {
         String commandMessage = message.getDeviceId() + ":U";
         kafkaTemplate.send(topicName, commandMessage);
-        return new StatusMessage(message.getDeviceId(), "UNLOCKED");
+        return new StatusMessage(message.getDeviceId(), Status.UNLOCKED);
     }
 
     // === DTOs ===
@@ -41,12 +43,12 @@ public class LockCommandWSController {
 
     public static class StatusMessage {
         private String deviceId;
-        private String status;
-        public StatusMessage(String deviceId, String status) {
+        private Status status;
+        public StatusMessage(String deviceId, Status status) {
             this.deviceId = deviceId;
             this.status = status;
         }
         public String getDeviceId() { return deviceId; }
-        public String getStatus() { return status; }
+        public Status getStatus() { return status; }
     }
 }

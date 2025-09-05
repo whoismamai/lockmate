@@ -5,6 +5,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import com.telenet.lockmate.util.AppUtil;
+
 @Service
 public class KafkaConsumerService {
 
@@ -22,6 +24,9 @@ public class KafkaConsumerService {
     public void consume(String message) {
         // Example message format: {"deviceId":"ML123","status":"LOCKED"}
         // Forward the message to all connected websocket clients
+
+        AppUtil.LOG.info("RECEIVED MSG -> 'maglock-events' :: " + message);
+
         messagingTemplate.convertAndSend("/topic/status", message);
     }
 }
