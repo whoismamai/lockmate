@@ -38,6 +38,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Default private UserType userType = UserType.USER;
 
+    private String profileImageUrl;
+    
+    private String accountId; // Foreign key to Account entity
+
     private LocalDateTime dateCreated;
     private LocalDateTime lastModified;
     private LocalDateTime lastLogin;

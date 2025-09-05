@@ -25,7 +25,9 @@ public class Facility {
     private String physicalAddress;
     private String contactNumber;
     private String emailAddress;
+
     private String ownerId; // Foreign key to User entity
+    private String accountId; // Foreign key to Account entity
 
     @Column(columnDefinition = "TEXT")
     private String description;
