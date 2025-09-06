@@ -38,8 +38,8 @@ function connectToLock(lock) {
     document.getElementById("lockDetails").style.display = "block";
     document.getElementById("selectedLockTitle").innerText =
         `Selected Lock: ${lock.serialNumber}`;
-    document.getElementById("status").innerText =
-        `Current Status: ${lock.isLocked ? "Locked" : "Unlocked"} (Online: ${lock.isOnline})`;
+    // document.getElementById("status").innerText =
+    //     `Current Status: ${lock.isLocked ? "Locked" : "Unlocked"} (Online: ${lock.isOnline})`;
 
     // Clear logs
     document.getElementById("logList").innerHTML = "";
@@ -109,6 +109,26 @@ function buzzDevice() {
     if (selectedLockId) {
         fetch(`/api/locks/${selectedLockId}/buzz`, { method: "PUT" })
             .then(() => appendLog("Buzz command sent"));
+    }
+}
+
+function startBuzz() {
+    if (selectedSerialNumber && stompClient) {
+        stompClient.send("/app/buzz", {}, JSON.stringify({ deviceId: selectedSerialNumber }));
+        appendLog("Buzz started...");
+
+        // Visual feedback on button
+        const buzzbButton = document.querySelector(".buzz");
+        buzzbButton.classList.add("pressed");
+    }
+}
+
+function stopBuzz() {
+    if (selectedSerialNumber && stompClient) {
+        stompClient.send("/app/stopBuzz", {}, JSON.stringify({ deviceId: selectedSerialNumber }));
+        appendLog("Buzz stopped.");
+        const buzzbButton = document.querySelector(".buzz");
+        buzzbButton.classList.remove("pressed");
     }
 }
 

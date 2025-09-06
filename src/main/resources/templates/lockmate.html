@@ -28,11 +28,15 @@
         <div id="controls">
             <button class="lock" onclick="lockDevice()">Lock</button>
             <button class="unlock" onclick="unlockDevice()">Unlock</button>
-            <button class="buzz" onclick="buzzDevice()">Buzz</button>
-            <p id="status"></p>
+            <button class="buzz"
+                onmousedown="startBuzz()"
+                onmouseup="stopBuzz()"
+                ontouchstart="startBuzz()"
+                ontouchend="stopBuzz()">Buzz</button>
+            <!-- <p id="status"></p> -->
         </div>
 
-        <div id="logs">
+        <div id="logs" style="background-color: aquamarine;">
             <h4>Logs</h4>
             <ul id="logList"></ul>
         </div>

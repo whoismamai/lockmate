@@ -78,6 +78,18 @@ public class LockCommandWSController {
         return LockDTO.from(lock);
     }
 
+    @MessageMapping("/buzz")
+    public void buzzDevice(Message message) {
+        String commandMessage = message.getDeviceId() + ":10"; // start buzzing
+        kafkaTemplate.send(topicName, commandMessage);
+    }
+
+    @MessageMapping("/stopBuzz")
+    public void stopBuzzDevice(Message message) {
+        String commandMessage = message.getDeviceId() + ":01"; // stop buzzing
+        kafkaTemplate.send(topicName, commandMessage);
+    }
+
     // === DTOs ===
     public static class Message {
         private String deviceId;
