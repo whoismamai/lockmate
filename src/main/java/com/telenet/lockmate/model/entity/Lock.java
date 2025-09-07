@@ -51,6 +51,7 @@ public class Lock {
     private boolean isOnline;
     private boolean isActive;
     private boolean hasScheduledLocking;
+    private boolean dnd;
 
     @Column(columnDefinition = "TEXT")
     @Enumerated(EnumType.STRING)

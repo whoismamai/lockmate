@@ -4,15 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
-public class UserRegisterDTO {
-
+public class RegisterResponseDTO {
+    private String userId;
     private String fullName;
-    private String emailAddress;
-    private String physicalAddress;
-    private String phoneNumber;
-    
-    private String password;
+    private String email;
+    private LocalDateTime createdAt;
 }

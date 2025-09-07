@@ -1,3 +1,8 @@
+jwt:
+  secret: "replace--with-a--very-long-random--secret"   # store securely (env/vault)
+  accessTokenExpirationMs: 900000      # 15 minutes
+  refreshTokenExpirationMs: 604800000  # 7 days
+
 server:
   port: 8888
 
@@ -18,8 +23,21 @@ spring:
   devtools:
     livereload:
       enabled: true   # enables automatic browser reload
+
   thymeleaf:
     cache: false      # disables caching so template changes reload instantly
+
+  mail:
+    host: smtp.gmail.com        # your SMTP host
+    port: 587
+    username: yourapp@gmail.com # replace with your sender email
+    password: your-app-password # use app password or vault
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -35,3 +53,7 @@ spring:
 kafka:
   bootstrapAddress: kafka:9092
   commandTopic: maglock-commands
+
+app:
+  frontend:
+    url: http://localhost:3000   # frontend base URL used in emails

@@ -12,6 +12,11 @@ function renderLocks(locks) {
     const list = document.getElementById("lockList");
     list.innerHTML = "";
 
+    if (!Array.isArray(locks)) {
+        console.warn("Locks is not an array:", locks);
+        return;
+    }
+
     locks.forEach(lock => {
         const li = document.createElement("li");
 
